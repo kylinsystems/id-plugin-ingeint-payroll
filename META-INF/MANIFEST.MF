@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.ingeint.idempierePayroll
 Bundle-SymbolicName: com.ingeint.idempierePayroll
-Bundle-Version: 8.1.0.qualifier
+Bundle-Version: 8.2.0.qualifier
 Bundle-Activator: org.adempiere.plugin.utils.Incremental2PackActivator
 Bundle-Vendor: INGEINT <https:www.//ingeint.com>
-Require-Bundle: org.adempiere.base;bundle-version="8.1.0",
- org.adempiere.plugin.utils;bundle-version="8.1.0",
- org.adempiere.base.callout;bundle-version="8.1.0",
- org.adempiere.base.process;bundle-version="8.1.0",
- org.adempiere.ui.zk;bundle-version="8.1.0",
+Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
+ org.adempiere.plugin.utils;bundle-version="8.2.0",
+ org.adempiere.base.callout;bundle-version="8.2.0",
+ org.adempiere.base.process;bundle-version="8.2.0",
+ org.adempiere.ui.zk;bundle-version="8.2.0",
+ org.idempiere.zk.extra;bundle-version="8.2.0",
  org.eclipse.equinox.ds;bundle-version="1.3.1",
  zcommon;bundle-version="0.0.0",
  zel;bundle-version="0.0.0",
@@ -18,8 +19,7 @@ Require-Bundle: org.adempiere.base;bundle-version="8.1.0",
  zkbind;bundle-version="0.0.0",
  zkplus;bundle-version="0.0.0",
  zul;bundle-version="0.0.0",
- zweb;bundle-version="0.0.0",
- org.idempiere.zk.extra;bundle-version="8.1.0"
+ zweb;bundle-version="0.0.0"
 Service-Component: OSGI-INF/org.idempiere.component.HRDocFactory.xml,OSGI-INF/com.ingeint.component.ZKFormFactory.xml,OSGI-INF/com.ingeint.component.ModelFactory.xml,OSGI-INF/com.ingeint.component.EventManager.xml,
  OSGI-INF/com.ingeint.component.ProcessFactory.xml, OSGI-INF/com.ingeint.component.CalloutFactory.xml
 Export-Package: com.ingeint.model,
