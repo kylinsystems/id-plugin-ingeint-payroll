@@ -227,7 +227,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		if (m_processMsg != null) {
 			return DocAction.STATUS_Invalid;
 		}
-
+				
 		// Std Period open?
 		MHRPeriod period = MHRPeriod.get(getCtx(), getHR_Period_ID());
 		MPeriod.testPeriodOpen(getCtx(),
@@ -623,6 +623,9 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		Object result = null;
 		m_description = null;
 		String errorMsg = "";
+		
+		String contract = getHR_Payroll().getHR_Contract().getValue();
+		
 		try {
 			String text = "";
 			if (rulee.getScript() != null) {
@@ -787,7 +790,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		MBPartner[] linesEmployee =null;
 		if (includeInActiveEmployee){
 			linesEmployee = MHREmployee.getEmployeesAll(this,allOrg);
-		}else{
+ 		}else{
 			linesEmployee = MHREmployee.getEmployees(this);
 		}
 		linesConcept = MHRPayrollConcept.getPayrollConcepts(this);
@@ -830,6 +833,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			m_scriptCtx.remove("_DateEnd");
 			m_scriptCtx.remove("_Days");
 			m_scriptCtx.remove("_C_BPartner_ID");
+			if (m_employee	== null)
+				throw new AdempiereException("Error: Verifique la informacion del empleado: "+bp.getName()+"_"+bp.getTaxID());
 			m_scriptCtx.put("_DateStart", m_employee.getStartDate());
 			m_scriptCtx.put(
 					"_DateEnd",

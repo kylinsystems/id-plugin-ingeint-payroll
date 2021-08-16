@@ -28,6 +28,7 @@ package com.ingeint.component;
 import org.eevolution.model.MHRAttribute;
 import org.eevolution.model.MHRConcept;
 import org.eevolution.model.MHRConceptCategory;
+import org.eevolution.model.MHRContract;
 import org.eevolution.model.MHRDepartment;
 import org.eevolution.model.MHREmployee;
 import org.eevolution.model.MHRMovement;
@@ -73,5 +74,6 @@ public class ModelFactory extends CustomModelFactory {
 		registerTableModel(MHRPaymentSelection.Table_Name, MHRPaymentSelection.class);
 		registerTableModel(MHRPaymentSelectionLine.Table_Name, MHRPaymentSelectionLine.class);
 		registerTableModel (MHRSectorCode.Table_Name, MHRSectorCode.class);
+		registerTableModel(MHRContract.Table_Name, MHRContract.class);
 	}
 }
