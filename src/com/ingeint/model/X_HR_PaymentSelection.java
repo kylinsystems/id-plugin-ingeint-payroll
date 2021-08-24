@@ -26,14 +26,14 @@ import org.compiere.util.Env;
 
 /** Generated Model for HR_PaymentSelection
  *  @author iDempiere (generated) 
- *  @version Release 5.1 - $Id$ */
+ *  @version Release 7.1 - $Id$ */
 public class X_HR_PaymentSelection extends PO implements I_HR_PaymentSelection, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191026L;
+	private static final long serialVersionUID = 20200210L;
 
     /** Standard Constructor */
     public X_HR_PaymentSelection (Properties ctx, int HR_PaymentSelection_ID, String trxName)
@@ -545,6 +545,31 @@ public class X_HR_PaymentSelection extends PO implements I_HR_PaymentSelection, 
 	public int getHR_Process_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_ING_PaymentSelectionType getING_PaymentSelectionType() throws RuntimeException
+    {
+		return (I_ING_PaymentSelectionType)MTable.get(getCtx(), I_ING_PaymentSelectionType.Table_Name)
+			.getPO(getING_PaymentSelectionType_ID(), get_TrxName());	}
+
+	/** Set ING_PaymentSelectionType.
+		@param ING_PaymentSelectionType_ID ING_PaymentSelectionType	  */
+	public void setING_PaymentSelectionType_ID (int ING_PaymentSelectionType_ID)
+	{
+		if (ING_PaymentSelectionType_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_ING_PaymentSelectionType_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_ING_PaymentSelectionType_ID, Integer.valueOf(ING_PaymentSelectionType_ID));
+	}
+
+	/** Get ING_PaymentSelectionType.
+		@return ING_PaymentSelectionType	  */
+	public int getING_PaymentSelectionType_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ING_PaymentSelectionType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

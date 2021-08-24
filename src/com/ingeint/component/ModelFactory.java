@@ -46,6 +46,7 @@ import com.ingeint.model.MHRPaymentSelectionLine;
 import com.ingeint.model.MHRSectorCode;
 import com.ingeint.model.MHR_Basic_Factor_Type;
 import com.ingeint.model.MHR_GAP;
+import com.ingeint.model.MPaymentSelectionType;
 
 
 /**
@@ -75,5 +76,6 @@ public class ModelFactory extends CustomModelFactory {
 		registerTableModel(MHRPaymentSelectionLine.Table_Name, MHRPaymentSelectionLine.class);
 		registerTableModel (MHRSectorCode.Table_Name, MHRSectorCode.class);
 		registerTableModel(MHRContract.Table_Name, MHRContract.class);
+		registerTableModel(MPaymentSelectionType.Table_Name, MPaymentSelectionType.class);
 	}
 }
