@@ -45,7 +45,12 @@ import com.ingeint.model.MHRPaymentSelection;
 import com.ingeint.model.MHRPaymentSelectionLine;
 import com.ingeint.model.MHRSectorCode;
 import com.ingeint.model.MHR_Basic_Factor_Type;
+import com.ingeint.model.MHR_Employee_Incidents;
 import com.ingeint.model.MHR_GAP;
+import com.ingeint.model.MHR_Shift_Incident;
+import com.ingeint.model.MHR_Shift_Incident_Line;
+import com.ingeint.model.MHR_Shifts;
+import com.ingeint.model.MHR_Shifts_Line;
 import com.ingeint.model.MPaymentSelectionType;
 
 
@@ -74,8 +79,13 @@ public class ModelFactory extends CustomModelFactory {
 		registerTableModel(MHRLoanLines.Table_Name, MHRLoanLines.class);
 		registerTableModel(MHRPaymentSelection.Table_Name, MHRPaymentSelection.class);
 		registerTableModel(MHRPaymentSelectionLine.Table_Name, MHRPaymentSelectionLine.class);
-		registerTableModel (MHRSectorCode.Table_Name, MHRSectorCode.class);
+		registerTableModel(MHRSectorCode.Table_Name, MHRSectorCode.class);
 		registerTableModel(MHRContract.Table_Name, MHRContract.class);
 		registerTableModel(MPaymentSelectionType.Table_Name, MPaymentSelectionType.class);
+		registerTableModel(MHR_Shifts.Table_Name, MHR_Shifts.class);
+		registerTableModel(MHR_Shifts_Line.Table_Name, MHR_Shifts_Line.class);
+		registerTableModel(MHR_Employee_Incidents.Table_Name, MHR_Employee_Incidents.class);
+		registerTableModel(MHR_Shift_Incident.Table_Name, MHR_Shift_Incident.class);
+		registerTableModel(MHR_Shift_Incident_Line.Table_Name, MHR_Shift_Incident_Line.class);
 	}
 }
