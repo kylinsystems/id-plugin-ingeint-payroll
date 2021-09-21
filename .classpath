@@ -7,5 +7,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/jdom2.jar"/>
+	<classpathentry kind="lib" path="lib/guava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -16,12 +16,15 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCharge;
+import org.compiere.model.MConversionRate;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MElementValue;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -29,6 +32,7 @@ import org.eevolution.model.MHRConcept;
 import org.eevolution.model.MHRMovement;
 import org.eevolution.model.MHRProcess;
 import org.eevolution.model.X_HR_Concept_Acct;
+
 
 
 /**
@@ -106,6 +110,8 @@ public class Doc_HRProcess extends Doc
 	{
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		
+		int baseCurrencyId = Env.getContextAsInt(getCtx(), "$C_Currency_ID");
+
 		BigDecimal totalamt = Env.ZERO;
 		for (int i = 0; i < p_lines.length; i++)
 		{
@@ -115,6 +121,9 @@ public class Doc_HRProcess extends Doc
 			BigDecimal sumAmount = line.getAmount();
 			// round amount according to currency
 			sumAmount = sumAmount.setScale(as.getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+			if (baseCurrencyId != as.getC_Currency_ID()) {
+				sumAmount = SetAmount(as.getC_Currency_ID(), baseCurrencyId, sumAmount);					
+			}
 			String AccountSign = line.getAccountSign();
 			boolean isBalancing = isBalancing(as.getC_AcctSchema_ID(), HR_Concept_ID);
 			int AD_OrgTrx_ID = line.getAD_Org_ID();
@@ -261,5 +270,17 @@ public class Doc_HRProcess extends Doc
 			Account_ID = DB.getSQLValueEx(getTrxName(), sqlAccount.toString(), HR_Concept_ID, AcctSchema_ID);
 		}
 		return Account_ID;
+	}
+	
+	public BigDecimal SetAmount(int C_Currency_ID, int baseCurrencyId, BigDecimal Amount) {
+		int stdPrecision = MCurrency.getStdPrecision(getCtx(), baseCurrencyId);
+		BigDecimal invAmt = null;
+		BigDecimal cr = MConversionRate.getRate(C_Currency_ID, baseCurrencyId, getDateAcct(), 0,
+				getAD_Client_ID(), getAD_Org_ID());
+		invAmt = Amount.divide(cr, stdPrecision, RoundingMode.HALF_UP);
+		if (invAmt.scale() > stdPrecision)
+			invAmt = invAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
+
+		return invAmt;
 	}
 }   //  Doc_Payroll

@@ -31,6 +31,9 @@ Export-Package: com.ingeint.model,
  com.ingeint.process
 Import-Package: org.adempiere.report.jasper,
  org.compiere.minigrid,
+ org.dom4j;version="2.1.1",
  org.osgi.service.event
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: com.ingeint.idempierePayroll
+Bundle-ClassPath: .,
+ lib/jdom2.jar
