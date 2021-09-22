@@ -56,7 +56,7 @@ public class CreateXML extends CustomProcess {
 			detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
 			detail.addContent(new Element("NumeroFactura").addContent("0"));
 			detail.addContent(new Element("NumeroControl").addContent("NA"));
-			detail.addContent(new Element("FechaOperacion").addContent(move.getHR_Process().getDateAcct().toString()));
+			detail.addContent(new Element("FechaOperacion").addContent(move.getHR_Process().getDateAcct().toString().substring(0, 10).replace("-","")));
 			detail.addContent(new Element("CodigoConcepto").addContent("001"));
 			detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
 			detail.addContent(new Element("PorcentajeRetencion").addContent("0"));
