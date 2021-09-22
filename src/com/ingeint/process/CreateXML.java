@@ -12,7 +12,6 @@ import org.eevolution.model.MHRMovement;
 import org.eevolution.model.MHRProcess;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.input.DOMBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
@@ -39,15 +38,16 @@ public class CreateXML extends CustomProcess {
 		MOrgInfo orgInfo = MOrgInfo.get(process.getAD_Org_ID());
 
 		// Root Element
-		Element root = new Element("RelacionRetencionesISLR")
-				.addContent(new Element("RifAgente").addContent(orgInfo.getTaxID())
-						.addContent(new Element("Periodo").addContent(process.getDateAcct().toString().substring(0, 8).replace("-",""))));
+		Element root = new Element("RelacionRetencionesISLR");
+		root.setAttribute("RifAgente", orgInfo.getTaxID());
+		root.setAttribute("Periodo", process.getDateAcct().toString().substring(0, 8).replace("-",""));
 		
-		Document doc = new Document();
+		
 
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
 				"HR_Process_ID = ? AND HR_Concept_ID = ? AND AD_Client_ID = ? ", get_TrxName())
-						.setParameters(new Object[] { getRecord_ID(), p_HR_Concept_ID, getAD_Client_ID() }).list();
+						.setParameters(new Object[] { getRecord_ID(), p_HR_Concept_ID, getAD_Client_ID() })
+						.list();
 
 		for (MHRMovement move : movements) {
 
@@ -64,12 +64,15 @@ public class CreateXML extends CustomProcess {
 			root.addContent(detail);
 
 		}
-
+		
+		Document doc = new Document();
 		doc.setRootElement(root);
 
 		// Create the XML
 		XMLOutputter outter = new XMLOutputter();
-		outter.setFormat(Format.getPrettyFormat());
+		Format format = Format.getPrettyFormat();
+	    format.setEncoding("ISO-8859-1");
+		outter.setFormat(format);		
 		File file = new File(getRecord_ID() + ".xml");
 		outter.output(doc, new FileWriter(file));
 
