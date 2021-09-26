@@ -51,6 +51,7 @@ import com.ingeint.model.MHR_Shift_Incident;
 import com.ingeint.model.MHR_Shift_Incident_Line;
 import com.ingeint.model.MHR_Shifts;
 import com.ingeint.model.MHR_Shifts_Line;
+import com.ingeint.model.MINGMovement;
 import com.ingeint.model.MPaymentSelectionType;
 
 
@@ -87,5 +88,6 @@ public class ModelFactory extends CustomModelFactory {
 		registerTableModel(MHR_Employee_Incidents.Table_Name, MHR_Employee_Incidents.class);
 		registerTableModel(MHR_Shift_Incident.Table_Name, MHR_Shift_Incident.class);
 		registerTableModel(MHR_Shift_Incident_Line.Table_Name, MHR_Shift_Incident_Line.class);
+		registerTableModel(MINGMovement.Table_Name, MINGMovement.class);
 	}
 }

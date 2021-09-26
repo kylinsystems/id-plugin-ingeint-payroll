@@ -16,6 +16,7 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 
 import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
@@ -53,7 +54,8 @@ public class DocLine_Payroll extends DocLine
 		m_Amount           = line.getAmount();
 		setAmount(line.getAmount());
 	}   //  DocLine_Payroll
-
+	
+	
 	//  References
 	private int m_HR_Process_ID  = 0;
 	private int m_HR_Concept_ID  = 0;
@@ -64,6 +66,7 @@ public class DocLine_Payroll extends DocLine
 	private int m_HR_Department_ID = 0;
 	private int m_C_BP_Group_ID = 0;
 	private int m_User1_ID = 0;
+	private BigDecimal m_CumulatedAmt = Env.ZERO;
 	
 	public int getHR_Process_ID(){
 		return m_HR_Process_ID;
@@ -101,5 +104,15 @@ public class DocLine_Payroll extends DocLine
 	public int getUser1_ID() {
 		return m_User1_ID;
 	}
+
+	public BigDecimal getM_CumulatedAmt() {
+		return m_CumulatedAmt;
+	}
+
+	public void setM_CumulatedAmt(BigDecimal m_CumulatedAmt) {
+		this.m_CumulatedAmt = m_CumulatedAmt;
+	}
+	
+	
 
 }   //  DocLine_Payroll
