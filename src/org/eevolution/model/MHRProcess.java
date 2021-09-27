@@ -430,6 +430,12 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 
 		log.warning(DB.getSQLValueString(get_TrxName(), "DELETE " + "FROM HR_Attribute " + "WHERE HR_Process_ID = ? ",
 				getHR_Process_ID()) + " Deleted Attributes");
+		
+		MHRPayroll payroll = new MHRPayroll(getCtx(), getHR_Payroll_ID(), get_TrxName());
+		if (payroll.get_ValueAsBoolean("IsCummulatedAccounting")) {
+			// Delete previus Records
+			DB.executeUpdate("DELETE FROM ING_HRMovement WHERE HR_Process_ID = ? ", getHR_Process_ID(), get_TrxName());
+		}
 
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_REACTIVATE);
@@ -511,6 +517,24 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		org.compiere.model.MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		return dt.getName() + " " + getDocumentNo();
 	} // getDocumentInfo
+
+	/**
+	 * Get Cummulated lines
+	 */
+
+	public MINGMovement[] getLines() {
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuilder whereClause = new StringBuilder();
+
+		whereClause.append(MINGMovement.COLUMNNAME_HR_Process_ID + "=? ");
+		params.add(getHR_Process_ID());
+
+		List<MINGMovement> list = new Query(getCtx(), MINGMovement.Table_Name, whereClause.toString(), get_TrxName())
+				.setParameters(params).list();
+
+		return list.toArray(new MINGMovement[list.size()]);
+
+	}
 
 	/**
 	 * Get Lines
@@ -710,17 +734,12 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	 */
 
 	private void createCumulatedMovements() throws SQLException {
-		
-		//Delete previus Records
-		DB.executeUpdate("DELETE FROM ING_HRMovement WHERE HR_Process_ID = ? ", getHR_Process_ID(), get_TrxName());
-
 
 		StringBuffer sql = new StringBuffer(
-				"SELECT AD_Client_ID, AD_Org_ID, HR_Process_ID, " + "SUM(Amount) as Amount, HR_Concept_ID, accountsign "
+				"SELECT AD_Client_ID, AD_Org_ID, HR_Process_ID, " + "SUM(Amount) as Amount, HR_Concept_ID, accountsign, User1_ID, C_Activity_ID "
 						+ "FROM HR_Movement WHERE AD_Client_ID = ? AND HR_Process_ID=? and accountsign notnull "
-						+ "GROUP BY hr_concept_id, AccountSign, hr_concept_id, AD_Client_ID, AD_Org_ID, hr_process_id "
+						+ "GROUP BY hr_concept_id, AccountSign, hr_concept_id, AD_Client_ID, AD_Org_ID, hr_process_id, User1_ID, C_Activity_ID "
 						+ "ORDER BY sum(amount)");
-		
 
 		try {
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -736,6 +755,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 				move.setHR_Concept_ID(rs.getInt(5));
 				move.setAccountSign(rs.getString(6));
 				move.setAmount(rs.getBigDecimal(4));
+				move.setUser1_ID(rs.getInt(7));
+				move.setC_Activity_ID(rs.getInt(8));
 				move.saveEx();
 			}
 		} finally {

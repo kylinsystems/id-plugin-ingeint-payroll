@@ -30,8 +30,11 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.eevolution.model.MHRConcept;
 import org.eevolution.model.MHRMovement;
+import org.eevolution.model.MHRPayroll;
 import org.eevolution.model.MHRProcess;
 import org.eevolution.model.X_HR_Concept_Acct;
+
+import com.ingeint.model.MINGMovement;
 
 /**
  * Post Payroll Documents.
@@ -80,14 +83,30 @@ public class Doc_HRProcess extends Doc {
 	 * @return DocLine Array
 	 */
 	private DocLine[] loadLines(MHRProcess process) {
+
+		MHRPayroll payroll = new MHRPayroll(getCtx(), process.getHR_Payroll_ID(), getTrxName());
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		MHRMovement[] lines = process.getLines(true);
-		for (int i = 0; i < lines.length; i++) {
-			MHRMovement line = lines[i];
-			DocLine_Payroll docLine = new DocLine_Payroll(line, this);
-			//
-			log.fine(docLine.toString());
-			list.add(docLine);
+
+		if (payroll.get_ValueAsBoolean("IsCummulatedAccounting")) {
+			
+			MINGMovement[] lines = process.getLines();
+			
+			for (MINGMovement line : lines) {
+				DocLine_Payroll docLine = new DocLine_Payroll(line, this);
+				log.fine(docLine.toString());
+				list.add(docLine);
+			}
+
+		} else {
+
+			MHRMovement[] lines = process.getLines(true);
+			for (int i = 0; i < lines.length; i++) {
+				MHRMovement line = lines[i];
+				DocLine_Payroll docLine = new DocLine_Payroll(line, this);
+				//
+				log.fine(docLine.toString());
+				list.add(docLine);
+			}
 		}
 		// Return Array
 		DocLine[] dls = new DocLine[list.size()];
@@ -132,6 +151,8 @@ public class Doc_HRProcess extends Doc {
 					MAccount accountBPD = MAccount.get(getCtx(), getAccountBalancingBPG(as.getC_AcctSchema_ID(),
 							HR_Concept_ID, MHRConcept.ACCOUNTSIGN_Debit, C_BP_Group_ID));
 					FactLine debit = fact.createLine(docLine, accountBPD, as.getC_Currency_ID(), sumAmount, null);
+					if (debit == null)
+						continue;
 					debit.setAD_OrgTrx_ID(AD_OrgTrx_ID);
 					debit.setC_Activity_ID(C_Activity_ID);
 					debit.setUser1_ID(User1_ID);
@@ -140,6 +161,8 @@ public class Doc_HRProcess extends Doc {
 					MAccount accountBPC = MAccount.get(getCtx(), this.getAccountBalancingBPG(as.getC_AcctSchema_ID(),
 							HR_Concept_ID, MHRConcept.ACCOUNTSIGN_Credit, C_BP_Group_ID));
 					FactLine credit = fact.createLine(docLine, accountBPC, as.getC_Currency_ID(), null, sumAmount);
+					if (credit == null)
+						continue;
 					credit.setAD_OrgTrx_ID(AD_OrgTrx_ID);
 					credit.setC_Activity_ID(C_Activity_ID);
 					credit.setUser1_ID(User1_ID);
@@ -150,6 +173,8 @@ public class Doc_HRProcess extends Doc {
 						MAccount accountBPD = MAccount.get(getCtx(), getAccountBalancingBPG(as.getC_AcctSchema_ID(),
 								HR_Concept_ID, MHRConcept.ACCOUNTSIGN_Debit, C_BP_Group_ID));
 						FactLine debit = fact.createLine(docLine, accountBPD, as.getC_Currency_ID(), sumAmount, null);
+						if (debit == null)
+							continue;
 						debit.setAD_OrgTrx_ID(AD_OrgTrx_ID);
 						debit.setC_Activity_ID(C_Activity_ID);
 						debit.setUser1_ID(User1_ID);
@@ -161,6 +186,8 @@ public class Doc_HRProcess extends Doc {
 						MAccount accountBPC = MAccount.get(getCtx(), this.getAccountBalancingBPG(
 								as.getC_AcctSchema_ID(), HR_Concept_ID, MHRConcept.ACCOUNTSIGN_Credit, C_BP_Group_ID));
 						FactLine credit = fact.createLine(docLine, accountBPC, as.getC_Currency_ID(), null, sumAmount);
+						if (credit == null)
+							continue;
 						credit.setAD_OrgTrx_ID(AD_OrgTrx_ID);
 						credit.setC_Activity_ID(C_Activity_ID);
 						credit.setUser1_ID(User1_ID);

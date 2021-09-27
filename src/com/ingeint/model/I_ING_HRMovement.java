@@ -32,7 +32,7 @@ public interface I_ING_HRMovement
     /** TableName=ING_HRMovement */
     public static final String Table_Name = "ING_HRMovement";
 
-    /** AD_Table_ID=1000046 */
+    /** AD_Table_ID=1000066 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -90,6 +90,21 @@ public interface I_ING_HRMovement
 	  */
 	public BigDecimal getAmount();
 
+    /** Column name C_Activity_ID */
+    public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
+
+	/** Set Activity.
+	  * Business Activity
+	  */
+	public void setC_Activity_ID (int C_Activity_ID);
+
+	/** Get Activity.
+	  * Business Activity
+	  */
+	public int getC_Activity_ID();
+
+	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -141,6 +156,8 @@ public interface I_ING_HRMovement
 	/** Get Payroll Concept	  */
 	public int getHR_Concept_ID();
 
+	public org.eevolution.model.I_HR_Concept getHR_Concept() throws RuntimeException;
+
     /** Column name HR_Process_ID */
     public static final String COLUMNNAME_HR_Process_ID = "HR_Process_ID";
 
@@ -149,6 +166,8 @@ public interface I_ING_HRMovement
 
 	/** Get Payroll Process	  */
 	public int getHR_Process_ID();
+
+	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException;
 
     /** Column name ING_HRMovement_ID */
     public static final String COLUMNNAME_ING_HRMovement_ID = "ING_HRMovement_ID";
@@ -196,4 +215,19 @@ public interface I_ING_HRMovement
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name User1_ID */
+    public static final String COLUMNNAME_User1_ID = "User1_ID";
+
+	/** Set User Element List 1.
+	  * User defined list element #1
+	  */
+	public void setUser1_ID (int User1_ID);
+
+	/** Get User Element List 1.
+	  * User defined list element #1
+	  */
+	public int getUser1_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
 }

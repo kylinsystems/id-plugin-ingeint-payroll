@@ -33,9 +33,6 @@ public class Acct_Payroll extends CustomEventHandler {
 						pa.get_TrxName());
 			}
 		}
-		
-		
-		
-		
+
 	}
 }

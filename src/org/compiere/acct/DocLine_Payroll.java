@@ -16,12 +16,13 @@
 package org.compiere.acct;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 
 import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
 import org.eevolution.model.MHRConcept;
 import org.eevolution.model.MHRMovement;
+
+import com.ingeint.model.MINGMovement;
 
 /**
  *  Payroll Line
@@ -56,6 +57,21 @@ public class DocLine_Payroll extends DocLine
 	}   //  DocLine_Payroll
 	
 	
+	public DocLine_Payroll(MINGMovement line, Doc_HRProcess doc) {
+		super (line, doc);
+		MHRConcept concept = MHRConcept.get(Env.getCtx(), line.getHR_Concept_ID());
+		
+		m_HR_Concept_ID = concept.getHR_Concept_ID();
+		m_HR_Process_ID    = line.getHR_Process_ID();
+		m_AccountSign      = concept.getAccountSign();
+		m_Amount           = line.getAmount();
+		m_User1_ID         = line.getUser1_ID();
+		m_C_Activity_ID    = line.getC_Activity_ID();
+
+		// TODO Auto-generated constructor stub
+	}
+
+
 	//  References
 	private int m_HR_Process_ID  = 0;
 	private int m_HR_Concept_ID  = 0;
