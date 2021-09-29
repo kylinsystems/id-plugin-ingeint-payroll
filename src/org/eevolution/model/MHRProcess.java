@@ -736,10 +736,12 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	private void createCumulatedMovements() throws SQLException {
 
 		StringBuffer sql = new StringBuffer(
-				"SELECT AD_Client_ID, AD_Org_ID, HR_Process_ID, " + "SUM(Amount) as Amount, HR_Concept_ID, accountsign, User1_ID, C_Activity_ID "
-						+ "FROM HR_Movement WHERE AD_Client_ID = ? AND HR_Process_ID=? and accountsign notnull "
-						+ "GROUP BY hr_concept_id, AccountSign, hr_concept_id, AD_Client_ID, AD_Org_ID, hr_process_id, User1_ID, C_Activity_ID "
-						+ "ORDER BY sum(amount)");
+				"SELECT m.AD_Client_ID, m.AD_Org_ID, m.HR_Process_ID, SUM(m.Amount) as Amount, m.HR_Concept_ID, m.accountsign, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
+						+ "FROM HR_Movement m "
+						+ "JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
+						+ "WHERE m.AD_Client_ID = ? AND m.HR_Process_ID=? and m.accountsign notnull "
+						+ "GROUP BY m.hr_concept_id, m.AccountSign, m.hr_concept_id, m.AD_Client_ID, m.AD_Org_ID, m.hr_process_id, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
+						+ "ORDER BY User1_ID, C_Activity_ID");
 
 		try {
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -757,6 +759,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 				move.setAmount(rs.getBigDecimal(4));
 				move.setUser1_ID(rs.getInt(7));
 				move.setC_Activity_ID(rs.getInt(8));
+				move.setC_Conversion_Rate_ID(rs.getInt(10));
 				move.saveEx();
 			}
 		} finally {

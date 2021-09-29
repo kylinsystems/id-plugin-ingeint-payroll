@@ -32,7 +32,7 @@ public class X_ING_HRMovement extends PO implements I_ING_HRMovement, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210927L;
+	private static final long serialVersionUID = 20210929L;
 
     /** Standard Constructor */
     public X_ING_HRMovement (Properties ctx, int ING_HRMovement_ID, String trxName)
@@ -141,6 +141,62 @@ public class X_ING_HRMovement extends PO implements I_ING_HRMovement, I_Persiste
 	public int getC_Activity_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_Name)
+			.getPO(getC_Conversion_Rate_ID(), get_TrxName());	}
+
+	/** Set Conversion Rate.
+		@param C_Conversion_Rate_ID 
+		Rate used for converting currencies
+	  */
+	public void setC_Conversion_Rate_ID (int C_Conversion_Rate_ID)
+	{
+		if (C_Conversion_Rate_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_Conversion_Rate_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_Conversion_Rate_ID, Integer.valueOf(C_Conversion_Rate_ID));
+	}
+
+	/** Get Conversion Rate.
+		@return Rate used for converting currencies
+	  */
+	public int getC_Conversion_Rate_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Conversion_Rate_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
+			.getPO(getC_Currency_ID(), get_TrxName());	}
+
+	/** Set Currency.
+		@param C_Currency_ID 
+		The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID)
+	{
+		if (C_Currency_ID < 1) 
+			set_Value (COLUMNNAME_C_Currency_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+	}
+
+	/** Get Currency.
+		@return The Currency for this record
+	  */
+	public int getC_Currency_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

@@ -25,98 +25,100 @@ import org.eevolution.model.MHRMovement;
 import com.ingeint.model.MINGMovement;
 
 /**
- *  Payroll Line
+ * Payroll Line
  *
- *  @author Jorg Janke
- *  @version  $Id: DocLine_Payroll.java,v 1.4 2005/10/17 23:43:52 jjanke Exp $
+ * @author Jorg Janke
+ * @version $Id: DocLine_Payroll.java,v 1.4 2005/10/17 23:43:52 jjanke Exp $
  */
-public class DocLine_Payroll extends DocLine
-{
+public class DocLine_Payroll extends DocLine {
 	/**
-	 *  Constructor
-	 *  @param line Payroll line
-	 *  @param doc header
+	 * Constructor
+	 * 
+	 * @param line Payroll line
+	 * @param doc  header
 	 */
-	public DocLine_Payroll (MHRMovement line, Doc_HRProcess doc)
-	{
-		super (line, doc);
+	public DocLine_Payroll(MHRMovement line, Doc_HRProcess doc) {
+		super(line, doc);
 		int C_BPartner_ID = line.getC_BPartner_ID();
-		MBPartner   bpartner = new MBPartner(Env.getCtx(),C_BPartner_ID,null);     
-		MHRConcept  concept  = MHRConcept.get(Env.getCtx(), line.getHR_Concept_ID()); 
-		//
-		m_HR_Concept_ID    = concept.getHR_Concept_ID();
-		m_HR_Process_ID    = line.getHR_Process_ID();
-		m_C_BPartner_ID    = C_BPartner_ID;
-		m_HR_Department_ID = line.getHR_Department_ID();
-		m_C_Activity_ID    = line.getC_Activity_ID();
-		m_User1_ID         = line.getUser1_ID();
-		m_C_BP_Group_ID    = bpartner.getC_BP_Group_ID();
-		m_AccountSign      = concept.getAccountSign();
-		m_Amount           = line.getAmount();
-		setAmount(line.getAmount());
-	}   //  DocLine_Payroll
-	
-	
-	public DocLine_Payroll(MINGMovement line, Doc_HRProcess doc) {
-		super (line, doc);
+		MBPartner bpartner = new MBPartner(Env.getCtx(), C_BPartner_ID, null);
 		MHRConcept concept = MHRConcept.get(Env.getCtx(), line.getHR_Concept_ID());
-		
+		//
 		m_HR_Concept_ID = concept.getHR_Concept_ID();
-		m_HR_Process_ID    = line.getHR_Process_ID();
-		m_AccountSign      = concept.getAccountSign();
-		m_Amount           = line.getAmount();
-		m_User1_ID         = line.getUser1_ID();
-		m_C_Activity_ID    = line.getC_Activity_ID();
+		m_HR_Process_ID = line.getHR_Process_ID();
+		m_C_BPartner_ID = C_BPartner_ID;
+		m_HR_Department_ID = line.getHR_Department_ID();
+		m_C_Activity_ID = line.getC_Activity_ID();
+		m_User1_ID = line.getUser1_ID();
+		m_C_BP_Group_ID = bpartner.getC_BP_Group_ID();
+		m_AccountSign = concept.getAccountSign();
+		m_Amount = line.getAmount();
+		setAmount(line.getAmount());
+	} // DocLine_Payroll
+
+	public DocLine_Payroll(MINGMovement line, Doc_HRProcess doc) {
+		super(line, doc);
+		MHRConcept concept = MHRConcept.get(Env.getCtx(), line.getHR_Concept_ID());
+
+		m_HR_Concept_ID = concept.getHR_Concept_ID();
+		m_HR_Process_ID = line.getHR_Process_ID();
+		m_AccountSign = concept.getAccountSign();
+		m_Amount = line.getAmount();
+		m_User1_ID = line.getUser1_ID();
+		m_C_Activity_ID = line.getC_Activity_ID();
+		m_Amount = line.getAmount();
+		m_C_Currency_ID = line.getC_Currency_ID();
+		setM_C_Conversion_Rate_ID(line.getC_Conversion_Rate_ID());
+		setAmount(line.getAmount());
 
 		// TODO Auto-generated constructor stub
 	}
 
-
-	//  References
-	private int m_HR_Process_ID  = 0;
-	private int m_HR_Concept_ID  = 0;
-	private int m_C_BPartner_ID  = 0;
-	private int m_C_Activity_ID  = 0;
+	// References
+	private int m_HR_Process_ID = 0;
+	private int m_HR_Concept_ID = 0;
+	private int m_C_BPartner_ID = 0;
+	private int m_C_Activity_ID = 0;
 	private String m_AccountSign = "";
-	private BigDecimal m_Amount  = Env.ZERO;
+	private BigDecimal m_Amount = Env.ZERO;
 	private int m_HR_Department_ID = 0;
 	private int m_C_BP_Group_ID = 0;
 	private int m_User1_ID = 0;
 	private BigDecimal m_CumulatedAmt = Env.ZERO;
-	
-	public int getHR_Process_ID(){
+	private int m_C_Currency_ID = 0;
+	private int m_C_Conversion_Rate_ID = 0;
+
+	public int getHR_Process_ID() {
 		return m_HR_Process_ID;
 	}
-	
-	public int getHR_Concept_ID(){
+
+	public int getHR_Concept_ID() {
 		return m_HR_Concept_ID;
 	}
-	
-	public String getAccountSign(){
+
+	public String getAccountSign() {
 		return m_AccountSign;
 	}
-	
-	public int getC_BPartner_ID(){
+
+	public int getC_BPartner_ID() {
 		return m_C_BPartner_ID;
 	}
-	
-	public int getC_Activity_ID(){
-		return m_C_Activity_ID;
-	}  
 
-	
-	public BigDecimal getAmount()	{
+	public int getC_Activity_ID() {
+		return m_C_Activity_ID;
+	}
+
+	public BigDecimal getAmount() {
 		return m_Amount;
 	}
 
-	public int getHR_Department_ID()	{
+	public int getHR_Department_ID() {
 		return m_HR_Department_ID;
 	}
 
-	public int getC_BP_Group_ID()	{
+	public int getC_BP_Group_ID() {
 		return m_C_BP_Group_ID;
 	}
-	
+
 	public int getUser1_ID() {
 		return m_User1_ID;
 	}
@@ -128,7 +130,22 @@ public class DocLine_Payroll extends DocLine
 	public void setM_CumulatedAmt(BigDecimal m_CumulatedAmt) {
 		this.m_CumulatedAmt = m_CumulatedAmt;
 	}
-	
-	
 
-}   //  DocLine_Payroll
+	public int getM_C_Currency_ID() {
+		return m_C_Currency_ID;
+	}
+
+	public void setM_C_Currency_ID(int m_C_Currency_ID) {
+		this.m_C_Currency_ID = m_C_Currency_ID;
+	}
+
+	public int getM_C_Conversion_Rate_ID() {
+		return m_C_Conversion_Rate_ID;
+	}
+
+	public void setM_C_Conversion_Rate_ID(int m_C_Conversion_Rate_ID) {
+		this.m_C_Conversion_Rate_ID = m_C_Conversion_Rate_ID;
+	}
+
+	
+} // DocLine_Payroll

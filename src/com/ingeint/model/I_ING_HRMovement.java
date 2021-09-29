@@ -105,6 +105,36 @@ public interface I_ING_HRMovement
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException;
 
+    /** Column name C_Conversion_Rate_ID */
+    public static final String COLUMNNAME_C_Conversion_Rate_ID = "C_Conversion_Rate_ID";
+
+	/** Set Conversion Rate.
+	  * Rate used for converting currencies
+	  */
+	public void setC_Conversion_Rate_ID (int C_Conversion_Rate_ID);
+
+	/** Get Conversion Rate.
+	  * Rate used for converting currencies
+	  */
+	public int getC_Conversion_Rate_ID();
+
+	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException;
+
+    /** Column name C_Currency_ID */
+    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
+
+	/** Set Currency.
+	  * The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID);
+
+	/** Get Currency.
+	  * The Currency for this record
+	  */
+	public int getC_Currency_ID();
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 

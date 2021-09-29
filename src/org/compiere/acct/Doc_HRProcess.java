@@ -54,6 +54,7 @@ public class Doc_HRProcess extends Doc {
 
 	/** Process Payroll **/
 	public static final String DOCTYPE_Payroll = "HRP";
+	private BigDecimal ConversionRate = Env.ZERO;
 
 	/**
 	 * Constructor
@@ -88,9 +89,9 @@ public class Doc_HRProcess extends Doc {
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 
 		if (payroll.get_ValueAsBoolean("IsCummulatedAccounting")) {
-			
+
 			MINGMovement[] lines = process.getLines();
-			
+
 			for (MINGMovement line : lines) {
 				DocLine_Payroll docLine = new DocLine_Payroll(line, this);
 				log.fine(docLine.toString());
@@ -134,8 +135,10 @@ public class Doc_HRProcess extends Doc {
 			BigDecimal sumAmount = line.getAmount();
 			// round amount according to currency
 			sumAmount = sumAmount.setScale(as.getStdPrecision(), BigDecimal.ROUND_HALF_UP);
+			if (line.getC_Currency_ID() > 0)
+				baseCurrencyId = line.getC_Currency_ID();
 			if (baseCurrencyId != as.getC_Currency_ID()) {
-				sumAmount = SetAmount(as.getC_Currency_ID(), baseCurrencyId, sumAmount);
+				sumAmount = SetAmount(line.getM_C_Conversion_Rate_ID(), line.getC_Currency_ID(), baseCurrencyId, sumAmount);
 			}
 			String AccountSign = line.getAccountSign();
 			boolean isBalancing = isBalancing(as.getC_AcctSchema_ID(), HR_Concept_ID);
@@ -278,12 +281,20 @@ public class Doc_HRProcess extends Doc {
 		return Account_ID;
 	}
 
-	public BigDecimal SetAmount(int C_Currency_ID, int baseCurrencyId, BigDecimal Amount) {
+	public BigDecimal SetAmount(int C_Conversion_Rate_ID, int C_Currency_ID, int baseCurrencyId, BigDecimal Amount) {
 		int stdPrecision = MCurrency.getStdPrecision(getCtx(), baseCurrencyId);
 		BigDecimal invAmt = null;
-		BigDecimal cr = MConversionRate.getRate(C_Currency_ID, baseCurrencyId, getDateAcct(), 0, getAD_Client_ID(),
-				getAD_Org_ID());
-		invAmt = Amount.divide(cr, stdPrecision, RoundingMode.HALF_UP);
+		BigDecimal cr = Env.ZERO;
+
+		if (C_Conversion_Rate_ID <= 0)
+			cr = MConversionRate.getRate(C_Currency_ID, baseCurrencyId, getDateAcct(), 0, getAD_Client_ID(),
+					getAD_Org_ID());
+		else {
+			MConversionRate rate = new MConversionRate(getCtx(), C_Conversion_Rate_ID, getTrxName());
+			cr = rate.getMultiplyRate();
+		}
+		
+		invAmt = Amount.multiply(cr);
 		if (invAmt.scale() > stdPrecision)
 			invAmt = invAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
 
