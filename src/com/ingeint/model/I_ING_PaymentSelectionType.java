@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ING_PaymentSelectionType
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 @SuppressWarnings("all")
 public interface I_ING_PaymentSelectionType 
@@ -32,7 +32,7 @@ public interface I_ING_PaymentSelectionType
     /** TableName=ING_PaymentSelectionType */
     public static final String Table_Name = "ING_PaymentSelectionType";
 
-    /** AD_Table_ID=1000214 */
+    /** AD_Table_ID=1000022 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -63,6 +63,21 @@ public interface I_ING_PaymentSelectionType
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name C_Currency_ID */
+    public static final String COLUMNNAME_C_Currency_ID = "C_Currency_ID";
+
+	/** Set Currency.
+	  * The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID);
+
+	/** Get Currency.
+	  * The Currency for this record
+	  */
+	public int getC_Currency_ID();
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -147,6 +162,15 @@ public interface I_ING_PaymentSelectionType
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsGroupedPayment */
+    public static final String COLUMNNAME_IsGroupedPayment = "IsGroupedPayment";
+
+	/** Set Is Grouped Payment	  */
+	public void setIsGroupedPayment (boolean IsGroupedPayment);
+
+	/** Get Is Grouped Payment	  */
+	public boolean isGroupedPayment();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

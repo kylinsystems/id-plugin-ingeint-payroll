@@ -24,14 +24,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ING_PaymentSelectionType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_ING_PaymentSelectionType extends PO implements I_ING_PaymentSelectionType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200210L;
+	private static final long serialVersionUID = 20210930L;
 
     /** Standard Constructor */
     public X_ING_PaymentSelectionType (Properties ctx, int ING_PaymentSelectionType_ID, String trxName)
@@ -68,10 +68,38 @@ public class X_ING_PaymentSelectionType extends PO implements I_ING_PaymentSelec
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ING_PaymentSelectionType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_ING_PaymentSelectionType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
+			.getPO(getC_Currency_ID(), get_TrxName());	}
+
+	/** Set Currency.
+		@param C_Currency_ID 
+		The Currency for this record
+	  */
+	public void setC_Currency_ID (int C_Currency_ID)
+	{
+		if (C_Currency_ID < 1) 
+			set_Value (COLUMNNAME_C_Currency_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
+	}
+
+	/** Get Currency.
+		@return The Currency for this record
+	  */
+	public int getC_Currency_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Description.
 		@param Description 
@@ -164,6 +192,27 @@ public class X_ING_PaymentSelectionType extends PO implements I_ING_PaymentSelec
 	public String getING_PaymentSelectionType_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_ING_PaymentSelectionType_UU);
+	}
+
+	/** Set Is Grouped Payment.
+		@param IsGroupedPayment Is Grouped Payment	  */
+	public void setIsGroupedPayment (boolean IsGroupedPayment)
+	{
+		set_Value (COLUMNNAME_IsGroupedPayment, Boolean.valueOf(IsGroupedPayment));
+	}
+
+	/** Get Is Grouped Payment.
+		@return Is Grouped Payment	  */
+	public boolean isGroupedPayment () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsGroupedPayment);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.
