@@ -67,7 +67,7 @@ public class DocLine_Payroll extends DocLine {
 		m_C_Activity_ID = line.getC_Activity_ID();
 		m_Amount = line.getAmount();
 		m_C_Currency_ID = line.getC_Currency_ID();
-		setM_C_Conversion_Rate_ID(line.getC_Conversion_Rate_ID());
+		m_C_Conversion_Rate_ID = line.getC_Conversion_Rate_ID();
 		setAmount(line.getAmount());
 
 		// TODO Auto-generated constructor stub
