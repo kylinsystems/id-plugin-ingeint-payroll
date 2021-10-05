@@ -103,6 +103,7 @@ public class PayrollUtils {
 		payment.set_ValueOfColumn("Amount", ps.getTotalPayAmt());
 		payment.setC_Currency_ID(CurrencyPay);
 		payment.setDateAcct(ps.getDateDoc());
+		payment.set_ValueOfColumn("DateAcctCustom", ps.getDateDoc());
 		payment.setDateTrx(ps.getDateDoc());
 		payment.setC_BPartner_ID(oi.get_ValueAsInt("C_BPartner_ID"));
 		payment.setC_BankAccount_ID(ps.getC_BankAccount_ID());
@@ -127,8 +128,7 @@ public class PayrollUtils {
 
 		if (currency_base_ID != currency_ID) {
 			BigDecimal CurrencyRate = MConversionRate
-					.getRate(currency_base_ID, currency_ID, DateTrx, C_ConversionType_ID, AD_Client_ID, AD_Org_ID)
-					.setScale(stdPrecision, RoundingMode.HALF_UP);
+					.getRate(currency_base_ID, currency_ID, DateTrx, C_ConversionType_ID, AD_Client_ID, AD_Org_ID);
 
 			if (CurrencyRate == null)
 				throw new AdempiereException("@NoCurrencyConversion@");
