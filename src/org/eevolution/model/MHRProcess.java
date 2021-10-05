@@ -760,6 +760,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 				move.setUser1_ID(rs.getInt(7));
 				move.setC_Activity_ID(rs.getInt(8));
 				move.setC_Conversion_Rate_ID(rs.getInt(10));
+				move.setC_Currency_ID(rs.getInt(9));
 				move.saveEx();
 			}
 		} finally {
