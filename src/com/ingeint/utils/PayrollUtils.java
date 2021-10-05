@@ -93,7 +93,7 @@ public class PayrollUtils {
 			throw new AdempiereException("@CurrencyPayment@");
 
 		BigDecimal Amount = GetAmount(ps.getCtx(), ps.getTotalPayAmt(), CurrencyPay,
-				ps.getC_BankAccount().getC_Currency_ID(), ps.getDateDoc(), ps.getAD_Client_ID(), ps.getAD_Org_ID());
+				ps.getING_PaymentSelectionType().getC_Currency_ID(), ps.getDateDoc(), ps.getAD_Client_ID(), ps.getAD_Org_ID());
 
 		MOrgInfo oi = MOrgInfo.get(ps.getAD_Org_ID());
 		MPayment payment = new MPayment(null, 0, ps.get_TrxName());
@@ -114,6 +114,12 @@ public class PayrollUtils {
 		payment.processIt("CO");
 		payment.setProcessed(true);
 		payment.saveEx();
+		
+		for (MHRPaymentSelectionLine line : ps.getLines()) {
+			if (payment != null)
+				line.setC_Payment_ID(payment.get_ID());
+				line.saveEx();
+		}
 
 		return payment;
 
