@@ -47,17 +47,17 @@ public class CreateXML extends CustomProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-
+		MOrg org = new MOrg(getCtx(), p_AD_Org_ID, get_TrxName());
 		MOrgInfo orgInfo = MOrgInfo.get(p_AD_Org_ID);
-		
+		String period = DateDoc.toString().substring(0, 8).replace("-","");
 		// Root Element
 		Element root = new Element("RelacionRetencionesISLR");
 		root.setAttribute("RifAgente", orgInfo.getTaxID());
-		root.setAttribute("Periodo", DateDoc.toString().substring(0, 8).replace("-",""));
+		root.setAttribute("Periodo", period);
 		
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
-				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? ", get_TrxName())
-						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID() })
+				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? AND AD_Org_ID = ? ", get_TrxName())
+						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID(), p_AD_Org_ID })
 						.list();
 
 		for (MHRMovement move : movements) {
@@ -84,7 +84,7 @@ public class CreateXML extends CustomProcess {
 		Format format = Format.getPrettyFormat();
 	    format.setEncoding("ISO-8859-1");
 		outter.setFormat(format);		
-		File file = new File(getRecord_ID() + ".xml");
+		File file = new File(org.getName() + "_" + period + ".xml");
 		outter.output(doc, new FileWriter(file));
 
 		processUI.download(file);
