@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.MOrg;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
@@ -23,11 +24,17 @@ public class CreateXML extends CustomProcess {
 	int p_HR_Concept_ID = 0;
 	Timestamp ValidFrom = null;
 	Timestamp ValidTo = null;
-
+	Timestamp DateDoc = null;
+    Integer p_AD_Org_ID = 0;
+	
 	protected void prepare() {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
-			if (name.equals("HR_Concept_ID"))
+			if (name.equals(MOrg.COLUMNNAME_AD_Org_ID))
+				p_AD_Org_ID = para.getParameterAsInt();
+			else if (name.equals("DateDoc"))
+				DateDoc = para.getParameterAsTimestamp();
+			else if (name.equals("HR_Concept_ID"))
 				p_HR_Concept_ID = para.getParameterAsInt();
 			else if (name.equals("ValidFrom"))
 				ValidFrom = para.getParameterAsTimestamp();
@@ -41,16 +48,13 @@ public class CreateXML extends CustomProcess {
 	@Override
 	protected String doIt() throws Exception {
 
-		MHRProcess process = new MHRProcess(getCtx(), getRecord_ID(), get_TrxName());
-		MOrgInfo orgInfo = MOrgInfo.get(process.getAD_Org_ID());
-
+		MOrgInfo orgInfo = MOrgInfo.get(p_AD_Org_ID);
+		
 		// Root Element
 		Element root = new Element("RelacionRetencionesISLR");
 		root.setAttribute("RifAgente", orgInfo.getTaxID());
-		root.setAttribute("Periodo", process.getDateAcct().toString().substring(0, 8).replace("-",""));
+		root.setAttribute("Periodo", DateDoc.toString().substring(0, 8).replace("-",""));
 		
-		
-
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
 				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? ", get_TrxName())
 						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID() })
