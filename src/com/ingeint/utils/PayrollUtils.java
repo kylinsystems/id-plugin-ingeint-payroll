@@ -108,6 +108,7 @@ public class PayrollUtils {
 		payment.setC_BPartner_ID(oi.get_ValueAsInt("C_BPartner_ID"));
 		payment.setC_BankAccount_ID(ps.getC_BankAccount_ID());
 		payment.setC_Charge_ID(ps.getC_Charge_ID());
+		payment.setRoutingNo(ps.getRoutingNo());
 		payment.setPayAmt(Amount);
 		payment.saveEx();
 
