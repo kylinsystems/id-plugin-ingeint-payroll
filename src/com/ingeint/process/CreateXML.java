@@ -2,6 +2,7 @@ package com.ingeint.process;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -20,12 +21,18 @@ import com.ingeint.base.CustomProcess;
 public class CreateXML extends CustomProcess {
 
 	int p_HR_Concept_ID = 0;
+	Timestamp ValidFrom = null;
+	Timestamp ValidTo = null;
 
 	protected void prepare() {
 		for (ProcessInfoParameter para : getParameter()) {
 			String name = para.getParameterName();
 			if (name.equals("HR_Concept_ID"))
 				p_HR_Concept_ID = para.getParameterAsInt();
+			else if (name.equals("ValidFrom"))
+				ValidFrom = para.getParameterAsTimestamp();
+			else if ( name.equals("ValidTo"))
+				ValidTo = para.getParameterAsTimestamp();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -45,8 +52,8 @@ public class CreateXML extends CustomProcess {
 		
 
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
-				"HR_Process_ID = ? AND HR_Concept_ID = ? AND AD_Client_ID = ? ", get_TrxName())
-						.setParameters(new Object[] { getRecord_ID(), p_HR_Concept_ID, getAD_Client_ID() })
+				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? ", get_TrxName())
+						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID() })
 						.list();
 
 		for (MHRMovement move : movements) {
