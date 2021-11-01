@@ -198,4 +198,16 @@ public interface I_HR_LoanLines
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+	
+	/** Column name HR_Process_ID */
+    public static final String COLUMNNAME_HR_Process_ID = "HR_Process_ID";
+
+	/** Set Payroll Process	  */
+	public void setHR_Process_ID (int HR_Process_ID);
+
+	/** Get Payroll Process	  */
+	public int getHR_Process_ID();
+
+	public org.eevolution.model.I_HR_Process getHR_Process() throws RuntimeException;
+
 }
