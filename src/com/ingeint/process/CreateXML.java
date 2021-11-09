@@ -3,6 +3,8 @@ package com.ingeint.process;
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -20,7 +22,7 @@ import org.jdom2.output.XMLOutputter;
 import com.ingeint.base.CustomProcess;
 
 public class CreateXML extends CustomProcess {
-
+	
 	int p_HR_Concept_ID = 0;
 	Timestamp ValidFrom = null;
 	Timestamp ValidTo = null;
@@ -61,13 +63,14 @@ public class CreateXML extends CustomProcess {
 						.list();
 
 		for (MHRMovement move : movements) {
-
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			String date = format.format(new Date(move.getHR_Process().getDateAcct().getTime()));
 			// Element 1
 			Element detail = new Element("DetalleRetencion");
 			detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
 			detail.addContent(new Element("NumeroFactura").addContent("0"));
 			detail.addContent(new Element("NumeroControl").addContent("NA"));
-			detail.addContent(new Element("FechaOperacion").addContent(move.getHR_Process().getDateAcct().toString().substring(0, 10).replace("-","")));
+			detail.addContent(new Element("FechaOperacion").addContent(date));
 			detail.addContent(new Element("CodigoConcepto").addContent("001"));
 			detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
 			detail.addContent(new Element("PorcentajeRetencion").addContent("0"));
