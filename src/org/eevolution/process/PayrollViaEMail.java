@@ -49,12 +49,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
+import com.ingeint.base.CustomProcess;
+
 /**
  *  Send Mail to Interest Area Subscribers
  *
  *  @author Antonio Canaveral, www.e-evolution.com 
  */
-public class PayrollViaEMail extends SvrProcess 
+public class PayrollViaEMail extends CustomProcess 
 {
 	/** What to send			*/
 	private int				m_R_MailText_ID = -1;
