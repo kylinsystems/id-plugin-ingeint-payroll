@@ -215,6 +215,9 @@ public class MHRPaymentSelection extends X_HR_PaymentSelection implements DocAct
 				pline.saveEx();
 				payment.deleteEx(true);
 			} else {
+				if (payment.getDocStatus().equals(DOCSTATUS_Reversed))
+					continue;
+				
 				payment.reverseCorrectIt();
 				payment.saveEx();
 			}

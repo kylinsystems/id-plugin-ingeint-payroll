@@ -2,21 +2,18 @@ package com.ingeint.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MConversionRate;
-import org.compiere.model.MConversionType;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.zkoss.zhtml.Big;
+import org.eevolution.model.MHRProcess;
 
 import com.ingeint.model.MHRPaymentSelection;
 import com.ingeint.model.MHRPaymentSelectionLine;;
@@ -27,7 +24,8 @@ public class PayrollUtils {
 
 		MHRPaymentSelection ps = new MHRPaymentSelection(psline.getCtx(), psline.getHR_PaymentSelection_ID(),
 				psline.get_TrxName());
-
+		
+		BigDecimal Amount;
 		MBankAccount ba = null;
 		MPayment payment = new MPayment(null, 0, psline.get_TrxName());
 		MBPartner employee = new MBPartner(psline.getCtx(), psline.getC_BPartner_ID(), psline.get_TrxName());
@@ -48,9 +46,14 @@ public class PayrollUtils {
 		if (CurrencyPay == 0)
 			throw new AdempiereException("@CurrencyPayment@");
 
-		BigDecimal Amount = GetAmount(ps.getCtx(), psline.getPayAmt(), CurrencyPay,
-				ps.getING_PaymentSelectionType().getC_Currency_ID(), ps.getDateDoc(), ps.getAD_Client_ID(),
-				ps.getAD_Org_ID());
+		MHRProcess pr = new MHRProcess(ps.getCtx(), ps.getHR_Process_ID(), ps.get_TrxName());
+		MConversionRate rate = new MConversionRate(pr.getCtx(), pr.get_ValueAsInt("C_Conversion_Rate_ID"),
+				pr.get_TrxName());
+		
+		if (payment.getC_BankAccount().getC_Currency_ID() != CurrencyPay)
+			Amount = GetAmount(rate,  ps.getTotalPayAmt());
+		else 
+			Amount = ps.getTotalPayAmt();
 
 		payment.set_ValueOfColumn("C_Currency_Pay_ID", payment.getC_BankAccount().getC_Currency_ID());
 		payment.setC_Currency_ID(CurrencyPay);
@@ -86,17 +89,29 @@ public class PayrollUtils {
 	}
 
 	public static MPayment CreatePayment(MHRPaymentSelection ps) {
-
+		
+		BigDecimal Amount;
 		int CurrencyPay = MSysConfig.getIntValue("C_Currency_Payment_ID", 0, ps.getAD_Client_ID());
 
 		if (CurrencyPay == 0)
 			throw new AdempiereException("@CurrencyPayment@");
-
-		BigDecimal Amount = GetAmount(ps.getCtx(), ps.getTotalPayAmt(), CurrencyPay,
-				ps.getING_PaymentSelectionType().getC_Currency_ID(), ps.getDateDoc(), ps.getAD_Client_ID(), ps.getAD_Org_ID());
-
+		
+		MHRProcess pr = new MHRProcess(ps.getCtx(), ps.getHR_Process_ID(), ps.get_TrxName());
+		MConversionRate rate = new MConversionRate(pr.getCtx(), pr.get_ValueAsInt("C_Conversion_Rate_ID"),
+				pr.get_TrxName());
+		
 		MOrgInfo oi = MOrgInfo.get(ps.getAD_Org_ID());
 		MPayment payment = new MPayment(null, 0, ps.get_TrxName());
+		
+		if (ps.getC_BankAccount().getC_Currency_ID() != CurrencyPay) {
+			Amount = GetAmount(rate,  ps.getTotalPayAmt());
+			payment.setCurrencyRate(rate.getMultiplyRate());
+			payment.setIsOverrideCurrencyRate(true);
+			payment.setConvertedAmt(ps.getTotalPayAmt());
+		} else 
+			Amount = ps.getTotalPayAmt();
+		
+		payment.setC_ConversionType_ID(rate.getC_ConversionType_ID());
 		payment.setAD_Org_ID(ps.getAD_Org_ID());
 		payment.setC_DocType_ID(ps.getC_DocTypePayment_ID());
 		payment.set_ValueOfColumn("C_Currency_Pay_ID", ps.getC_BankAccount().getC_Currency_ID());
@@ -111,42 +126,29 @@ public class PayrollUtils {
 		payment.setRoutingNo(ps.getRoutingNo());
 		payment.setPayAmt(Amount);
 		payment.saveEx();
-
 		payment.processIt("CO");
 		payment.setProcessed(true);
 		payment.saveEx();
-		
+
 		for (MHRPaymentSelectionLine line : ps.getLines()) {
 			if (payment != null)
 				line.setC_Payment_ID(payment.get_ID());
-				line.saveEx();
+			line.saveEx();
 		}
 
 		return payment;
 
 	}
 
-	public static BigDecimal GetAmount(Properties Ctx, BigDecimal Amount, int currency_base_ID, int currency_ID,
-			Timestamp DateTrx, int AD_Client_ID, int AD_Org_ID) {
+	public static BigDecimal GetAmount(MConversionRate rate, BigDecimal Amount) {
 
-		int stdPrecision = MCurrency.getStdPrecision(Ctx, currency_base_ID);
-		int C_ConversionType_ID = MConversionType.getDefault(AD_Client_ID);
+		int stdPrecision = MCurrency.getStdPrecision(rate.getCtx(), rate.getC_Currency_ID());
 		BigDecimal PayAmt = Env.ZERO;
-
-		if (currency_base_ID != currency_ID) {
-			BigDecimal CurrencyRate = MConversionRate
-					.getRate(currency_base_ID, currency_ID, DateTrx, C_ConversionType_ID, AD_Client_ID, AD_Org_ID);
-
-			if (CurrencyRate == null)
-				throw new AdempiereException("@NoCurrencyConversion@");
-
-			PayAmt = Amount.divide(CurrencyRate, stdPrecision, RoundingMode.HALF_UP).setScale(stdPrecision,
-					RoundingMode.HALF_UP);
-			return PayAmt;
-
-		} else {
-			return Amount;
-		}
+		PayAmt = Amount.multiply(rate.getDivideRate());
+		if (PayAmt.scale() > stdPrecision)
+			PayAmt = PayAmt.setScale(stdPrecision, RoundingMode.HALF_UP);
+		
+		return PayAmt;
 
 	}
 
