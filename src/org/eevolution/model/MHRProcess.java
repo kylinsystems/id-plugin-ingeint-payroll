@@ -748,11 +748,14 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			pstmt.setInt(1, getAD_Client_ID());
 			pstmt.setInt(2, getHR_Process_ID());
 			rs = pstmt.executeQuery();
+			
+			DB.executeUpdate("DELETE " + "FROM ING_HRMovement " + "WHERE HR_Process_ID = ? ", getHR_Process_ID(),
+					get_TrxName());
 
 			while (rs.next()) {
 
 				MINGMovement move = new MINGMovement(getCtx(), 0, get_TrxName());
-				move.setAD_Org_ID(rs.getInt(1));
+				move.setAD_Org_ID(rs.getInt(2));
 				move.setHR_Process_ID(rs.getInt(3));
 				move.setHR_Concept_ID(rs.getInt(5));
 				move.setAccountSign(rs.getString(6));
