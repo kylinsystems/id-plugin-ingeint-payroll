@@ -17,6 +17,7 @@ package org.eevolution.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -3147,6 +3148,18 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		long diferenciaEn_ms = Major.getTime() - Minor.getTime();
 		long dias = diferenciaEn_ms / (1000 * 60 * 60 * 24);
 		return (int) dias + 1;
+	}
+	
+	public double getRoundingValue(double value, int places) {
+		
+		BigDecimal valuebig = new BigDecimal(value);
+		if (valuebig.scale() > places)
+			valuebig = valuebig.setScale(places, RoundingMode.HALF_UP);
+		
+		value = Double.parseDouble(valuebig.toString());
+			
+		return value;
+		
 	}
 
 } // MHRProcess
