@@ -2,6 +2,7 @@ package com.ingeint.process;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +11,11 @@ import java.util.logging.Level;
 
 import org.compiere.model.MOrg;
 import org.compiere.model.MOrgInfo;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.eevolution.model.MHRMovement;
 import org.eevolution.model.MHRProcess;
 import org.jdom2.Document;
@@ -65,6 +69,15 @@ public class CreateXML extends CustomProcess {
 		for (MHRMovement move : movements) {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			String date = format.format(new Date(move.getHR_Process().getDateAcct().getTime()));
+			int PerecentageRet = MSysConfig.getIntValue("PerecentageRet", 0, move.getAD_Client_ID());
+			String sql = "SELECT Amount "
+					+ "FROM HR_Movement "
+					+ "WHERE HR_Concept_ID = ? "
+					+ "AND HR_Process_ID = ? "
+					+ "AND C_BPartner_ID = ?";
+			
+			BigDecimal AmountFactor = DB.getSQLValueBD(null, sql, new Object[] {PerecentageRet, move.getHR_Process_ID(), move.getC_BPartner_ID()});	
+			
 			// Element 1
 			Element detail = new Element("DetalleRetencion");
 			detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
@@ -73,8 +86,7 @@ public class CreateXML extends CustomProcess {
 			detail.addContent(new Element("FechaOperacion").addContent(date));
 			detail.addContent(new Element("CodigoConcepto").addContent("001"));
 			detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
-			detail.addContent(new Element("PorcentajeRetencion").addContent("0"));
-
+			detail.addContent(new Element("PorcentajeRetencion").addContent(AmountFactor.toString()));
 			root.addContent(detail);
 
 		}
