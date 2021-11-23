@@ -62,7 +62,7 @@ public class CreateXML extends CustomProcess {
 		root.setAttribute("Periodo", period);
 		
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
-				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? AND AD_Org_ID = ? ", get_TrxName())
+				"HR_Movement.ValidFrom >= ? And HR_Movement.ValidTo <= ? AND HR_Movement.HR_Concept_ID = ? AND HR_Movement.AD_Client_ID = ? AND HR_Movement.AD_Org_ID = ? ", get_TrxName())
 						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID(), p_AD_Org_ID })
 					    .addJoinClause("JOIN C_BPartner bp on bp.C_BPartner_ID = HR_Movement.C_BPartner_ID ")
 						.setOrderBy("BP.TaxID")
@@ -70,7 +70,7 @@ public class CreateXML extends CustomProcess {
 
 		for (MHRMovement move : movements) {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			String date = format.format(new Date(move.getHR_Process().getDateAcct().getTime()));
+			String date = format.format(new Date(move.getHR_Process().getHR_Period().getEndDate().getTime()));
 			int PerecentageRet = MSysConfig.getIntValue("PerecentageRet", 0, move.getAD_Client_ID());
 			String sql = "SELECT Amount "
 					+ "FROM HR_Movement "
