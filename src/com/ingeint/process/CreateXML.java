@@ -64,6 +64,8 @@ public class CreateXML extends CustomProcess {
 		List<MHRMovement> movements = new Query(getCtx(), MHRMovement.Table_Name,
 				"ValidFrom >= ? And ValidTo <= ? AND HR_Concept_ID = ? AND AD_Client_ID = ? AND AD_Org_ID = ? ", get_TrxName())
 						.setParameters(new Object[] { ValidFrom, ValidTo, p_HR_Concept_ID, getAD_Client_ID(), p_AD_Org_ID })
+					    .addJoinClause("JOIN C_BPartner bp on bp.C_BPartner_ID = HR_Movement.C_BPartner_ID ")
+						.setOrderBy("BP.TaxID")
 						.list();
 
 		for (MHRMovement move : movements) {
