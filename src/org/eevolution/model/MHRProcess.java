@@ -35,6 +35,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MPeriod;
@@ -92,6 +93,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	public String m_columnType = "";
 	public Timestamp m_dateFrom;
 	public Timestamp m_dateTo;
+	private BigDecimal conversionRate = Env.ZERO;
 	/** HR_Concept_ID->MHRMovement */
 	public Hashtable<Integer, MHRMovement> m_movement = new Hashtable<Integer, MHRMovement>();
 	public MHRPayrollConcept[] linesConcept;
@@ -240,6 +242,11 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		}
 
 		try {
+			
+			if (get_ValueAsInt("C_Conversion_Rate_ID") > 0) {
+				MConversionRate cr = new MConversionRate(getCtx(), get_ValueAsInt("C_Conversion_Rate_ID"), get_TrxName());			
+				conversionRate = cr.getMultiplyRate();
+			}
 			createMovements();
 			MHRPayroll payroll = new MHRPayroll(getCtx(), getHR_Payroll_ID(), get_TrxName());
 			if (payroll.get_ValueAsBoolean("IsCummulatedAccounting"))
@@ -431,7 +438,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 
 		log.warning(DB.getSQLValueString(get_TrxName(), "DELETE " + "FROM HR_Attribute " + "WHERE HR_Process_ID = ? ",
 				getHR_Process_ID()) + " Deleted Attributes");
-		
+
 		MHRPayroll payroll = new MHRPayroll(getCtx(), getHR_Payroll_ID(), get_TrxName());
 		if (payroll.get_ValueAsBoolean("IsCummulatedAccounting")) {
 			// Delete previus Records
@@ -738,8 +745,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 
 		StringBuffer sql = new StringBuffer(
 				"SELECT m.AD_Client_ID, m.AD_Org_ID, m.HR_Process_ID, SUM(m.Amount) as Amount, m.HR_Concept_ID, m.accountsign, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
-						+ "FROM HR_Movement m "
-						+ "JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
+						+ "FROM HR_Movement m " + "JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
 						+ "WHERE m.AD_Client_ID = ? AND m.HR_Process_ID=? and m.accountsign notnull "
 						+ "GROUP BY m.hr_concept_id, m.AccountSign, m.hr_concept_id, m.AD_Client_ID, m.AD_Org_ID, m.hr_process_id, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
 						+ "ORDER BY User1_ID, C_Activity_ID");
@@ -749,7 +755,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			pstmt.setInt(1, getAD_Client_ID());
 			pstmt.setInt(2, getHR_Process_ID());
 			rs = pstmt.executeQuery();
-			
+
 			DB.executeUpdate("DELETE " + "FROM ING_HRMovement " + "WHERE HR_Process_ID = ? ", getHR_Process_ID(),
 					get_TrxName());
 
@@ -1005,6 +1011,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			movement.setTextMsg(att.getTextMsg());
 			movement.setServiceDate(att.getServiceDate());
 		}
+		
+		movement.set_ValueOfColumn("ConvertedAmt", movement.getAmount().multiply(conversionRate));
 		movement.setProcessed(true);
 		movement.setAD_Org_ID(getAD_Org_ID());
 		m_movement.put(concept.getHR_Concept_ID(), movement);
@@ -3149,17 +3157,17 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		long dias = diferenciaEn_ms / (1000 * 60 * 60 * 24);
 		return (int) dias + 1;
 	}
-	
+
 	public double getRoundingValue(double value, int places) {
-		
+
 		BigDecimal valuebig = new BigDecimal(value);
 		if (valuebig.scale() > places)
 			valuebig = valuebig.setScale(places, RoundingMode.HALF_UP);
-		
+
 		value = Double.parseDouble(valuebig.toString());
-			
+
 		return value;
-		
+
 	}
 
 } // MHRProcess
