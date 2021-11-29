@@ -81,17 +81,19 @@ public class CreateXML extends CustomProcess {
 			BigDecimal AmountFactor = DB.getSQLValueBD(null, sql, new Object[] {PerecentageRet, move.getHR_Process_ID(), move.getC_BPartner_ID()});	
 			
 			// Element 1
-			Element detail = new Element("DetalleRetencion");
-			detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
-			detail.addContent(new Element("NumeroFactura").addContent("0"));
-			detail.addContent(new Element("NumeroControl").addContent("NA"));
-			detail.addContent(new Element("FechaOperacion").addContent(date));
-			detail.addContent(new Element("CodigoConcepto").addContent("001"));
-			detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
-			detail.addContent(new Element("PorcentajeRetencion").addContent(AmountFactor.toString()));
-			root.addContent(detail);
-
-		}
+			if(move.getC_BPartner().getTaxID().length() > 8) {
+			
+				Element detail = new Element("DetalleRetencion");
+				detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
+				detail.addContent(new Element("NumeroFactura").addContent("0"));
+				detail.addContent(new Element("NumeroControl").addContent("NA"));
+				detail.addContent(new Element("FechaOperacion").addContent(date));
+				detail.addContent(new Element("CodigoConcepto").addContent("001"));
+				detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
+				detail.addContent(new Element("PorcentajeRetencion").addContent(AmountFactor.toString()));
+				root.addContent(detail);};
+	
+			}
 		
 		Document doc = new Document();
 		doc.setRootElement(root);
