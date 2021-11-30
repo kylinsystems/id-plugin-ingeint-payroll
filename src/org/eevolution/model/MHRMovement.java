@@ -160,12 +160,13 @@ public class MHRMovement extends X_HR_Movement
 			} 
 			else if(MHRConcept.COLUMNTYPE_Amount.equals(columnType))
 			{
+					int precisionCu = MCurrency.getStdPrecision(getCtx(), Env.getContextAsInt(p_ctx, "$C_Currency_ID"));				
 					MHRProcess Process = new MHRProcess(p_ctx, getHR_Process_ID(), get_TrxName());
 					MConversionRate cr = new MConversionRate(getCtx(), Process.get_ValueAsInt("C_Conversion_Rate_ID"), get_TrxName());			
 					MHRPayroll pa = new MHRPayroll(p_ctx, Process.getHR_Payroll_ID(), get_TrxName());
 					int precision = Integer.parseInt(pa.get_Value("StdPrecision").toString());
 					BigDecimal amount = new BigDecimal(value.toString()).setScale(precision, RoundingMode.HALF_UP);
-					BigDecimal convAmt = new BigDecimal(value.toString()).multiply(cr.getMultiplyRate()).setScale(precision, RoundingMode.HALF_UP);
+					BigDecimal convAmt = new BigDecimal(value.toString()).multiply(cr.getMultiplyRate()).setScale(precisionCu, RoundingMode.HALF_UP);
 				
 				set_ValueOfColumn("ConvertedAmt", convAmt);
 				setAmount(amount);
