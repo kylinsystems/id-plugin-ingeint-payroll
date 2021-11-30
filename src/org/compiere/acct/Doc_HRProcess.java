@@ -138,7 +138,7 @@ public class Doc_HRProcess extends Doc {
 			if (line.getC_Currency_ID() > 0)
 				baseCurrencyId = line.getC_Currency_ID();
 			if (baseCurrencyId != as.getC_Currency_ID()) {
-				sumAmount = SetAmount(line.getM_C_Conversion_Rate_ID(), line.getC_Currency_ID(), baseCurrencyId, sumAmount);
+				sumAmount = line.getM_CumulatedAmt();
 			}
 			String AccountSign = line.getAccountSign();
 			boolean isBalancing = isBalancing(as.getC_AcctSchema_ID(), HR_Concept_ID);
@@ -300,4 +300,5 @@ public class Doc_HRProcess extends Doc {
 
 		return invAmt;
 	}
+	
 } // Doc_Payroll

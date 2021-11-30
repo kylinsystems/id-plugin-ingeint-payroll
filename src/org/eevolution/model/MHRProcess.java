@@ -744,7 +744,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	private void createCumulatedMovements() throws SQLException {
 
 		StringBuffer sql = new StringBuffer(
-				"SELECT m.AD_Client_ID, m.AD_Org_ID, m.HR_Process_ID, SUM(m.Amount) as Amount, m.HR_Concept_ID, m.accountsign, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
+				"SELECT m.AD_Client_ID, m.AD_Org_ID, m.HR_Process_ID, SUM(m.Amount) as Amount, m.HR_Concept_ID, m.accountsign, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID, SUM(m.ConvertedAmt)"
 						+ "FROM HR_Movement m " + "JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
 						+ "WHERE m.AD_Client_ID = ? AND m.HR_Process_ID=? and m.accountsign notnull "
 						+ "GROUP BY m.hr_concept_id, m.AccountSign, m.hr_concept_id, m.AD_Client_ID, m.AD_Org_ID, m.hr_process_id, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
@@ -771,6 +771,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 				move.setC_Activity_ID(rs.getInt(8));
 				move.setC_Conversion_Rate_ID(rs.getInt(10));
 				move.setC_Currency_ID(rs.getInt(9));
+				move.set_ValueOfColumn("ConvertedAmt", rs.getBigDecimal(11));
 				move.saveEx();
 			}
 		} finally {
@@ -1012,7 +1013,6 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			movement.setServiceDate(att.getServiceDate());
 		}
 		
-		movement.set_ValueOfColumn("ConvertedAmt", movement.getAmount().multiply(conversionRate));
 		movement.setProcessed(true);
 		movement.setAD_Org_ID(getAD_Org_ID());
 		m_movement.put(concept.getHR_Concept_ID(), movement);

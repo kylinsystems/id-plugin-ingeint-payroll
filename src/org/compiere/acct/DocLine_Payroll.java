@@ -66,9 +66,11 @@ public class DocLine_Payroll extends DocLine {
 		m_User1_ID = line.getUser1_ID();
 		m_C_Activity_ID = line.getC_Activity_ID();
 		m_Amount = line.getAmount();
+		m_CumulatedAmt = new BigDecimal(line.get_Value("ConvertedAmt").toString());
 		m_C_Currency_ID = line.getC_Currency_ID();
 		m_C_Conversion_Rate_ID = line.getC_Conversion_Rate_ID();
-		setAmount(line.getAmount());
+		setAmount(m_Amount);
+		setM_CumulatedAmt(m_CumulatedAmt);
 
 		// TODO Auto-generated constructor stub
 	}

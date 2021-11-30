@@ -15,12 +15,14 @@
  *****************************************************************************/
 package org.eevolution.model;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_C_BP_BankAccount;
+import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -158,8 +160,14 @@ public class MHRMovement extends X_HR_Movement
 			} 
 			else if(MHRConcept.COLUMNTYPE_Amount.equals(columnType))
 			{
-					int precision = MCurrency.getStdPrecision(getCtx(), Env.getContextAsInt(p_ctx, "$C_Currency_ID"));				
-					BigDecimal amount = new BigDecimal(value.toString()).setScale(precision, BigDecimal.ROUND_HALF_UP);
+					MHRProcess Process = new MHRProcess(p_ctx, getHR_Process_ID(), get_TrxName());
+					MConversionRate cr = new MConversionRate(getCtx(), Process.get_ValueAsInt("C_Conversion_Rate_ID"), get_TrxName());			
+					MHRPayroll pa = new MHRPayroll(p_ctx, Process.getHR_Payroll_ID(), get_TrxName());
+					BigDecimal convAmt = new BigDecimal(value.toString()).multiply(cr.getMultiplyRate()).setScale(2, RoundingMode.HALF_UP);
+					int precision = Integer.parseInt(pa.get_Value("StdPrecision").toString());
+					BigDecimal amount = new BigDecimal(value.toString()).setScale(precision, RoundingMode.HALF_UP);
+				
+				set_ValueOfColumn("ConvertedAmt", convAmt);
 				setAmount(amount);
 				setQty(Env.ZERO);
 			} 
