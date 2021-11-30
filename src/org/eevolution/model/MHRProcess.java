@@ -1208,6 +1208,35 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	 * @param pconcept
 	 * @return
 	 */
+	public double getConceptGroupConverted(String pconcept) {
+		final MHRConceptCategory category = MHRConceptCategory.forValue(getCtx(), pconcept);
+		if (category == null) {
+			return 0.0; // TODO: need to throw exception ?
+		}
+		//
+		double value = 0.0;
+		for (MHRPayrollConcept pc : linesConcept) {
+			MHRConcept con = MHRConcept.get(getCtx(), pc.getHR_Concept_ID());
+			if (con.getHR_Concept_Category_ID() == category.get_ID()) {
+				MHRMovement movement = m_movement.get(pc.getHR_Concept_ID());
+				if (movement == null) {
+					createMovementFromConcept(con, con.isPrinted());
+					movement = m_movement.get(con.get_ID());
+				} else {
+					String columnType = movement.getColumnType();
+					if (MHRConcept.COLUMNTYPE_Amount.equals(columnType)) {
+						double converted_move = Double.parseDouble(movement.get_Value("ConvertedAmt").toString());
+						value += converted_move;
+					} else if (MHRConcept.COLUMNTYPE_Quantity.equals(columnType)) {
+						value += movement.getQty().doubleValue();
+					}
+				}
+			}
+		}
+		return value;
+	} // getConceptGroup
+	
+	
 	public double getConceptGroup(String pconcept) {
 		final MHRConceptCategory category = MHRConceptCategory.forValue(getCtx(), pconcept);
 		if (category == null) {
@@ -3169,6 +3198,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		return value;
 
 	}
+
 	
 	public double getConceptConverted(String pconcept) {
 		MHRConcept concept = MHRConcept.forValue(getCtx(), pconcept.trim());
