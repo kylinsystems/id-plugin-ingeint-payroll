@@ -3169,5 +3169,33 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		return value;
 
 	}
+	
+	public double getConceptConverted(String pconcept) {
+		MHRConcept concept = MHRConcept.forValue(getCtx(), pconcept.trim());
+
+		if (concept == null) { // red1 - return 0;
+			throw new AdempiereException(pconcept + " does not exist. Please create it first in Payroll Concept");
+		}
+
+		MHRMovement m = m_movement.get(concept.get_ID());
+		if (m == null) {
+			createMovementFromConcept(concept, concept.isPrinted());
+			m = m_movement.get(concept.get_ID());
+		}
+		if (m == null) {
+			throw new AdempiereException("Concept " + concept.getValue() + " not created");
+		}
+
+		String type = m.getColumnType();
+		if (MHRMovement.COLUMNTYPE_Amount.equals(type)) {
+			return Double.parseDouble(m.get_Value("ConvertedAmt").toString());
+		} else if (MHRMovement.COLUMNTYPE_Quantity.equals(type)) {
+			return m.getQty().doubleValue();
+		} else {
+			// TODO: throw exception ?
+			return 0;
+		}
+	} // getConcept
+
 
 } // MHRProcess
