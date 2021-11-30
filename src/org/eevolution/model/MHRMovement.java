@@ -163,9 +163,9 @@ public class MHRMovement extends X_HR_Movement
 					MHRProcess Process = new MHRProcess(p_ctx, getHR_Process_ID(), get_TrxName());
 					MConversionRate cr = new MConversionRate(getCtx(), Process.get_ValueAsInt("C_Conversion_Rate_ID"), get_TrxName());			
 					MHRPayroll pa = new MHRPayroll(p_ctx, Process.getHR_Payroll_ID(), get_TrxName());
-					BigDecimal convAmt = new BigDecimal(value.toString()).multiply(cr.getMultiplyRate()).setScale(2, RoundingMode.HALF_UP);
 					int precision = Integer.parseInt(pa.get_Value("StdPrecision").toString());
 					BigDecimal amount = new BigDecimal(value.toString()).setScale(precision, RoundingMode.HALF_UP);
+					BigDecimal convAmt = new BigDecimal(value.toString()).multiply(cr.getMultiplyRate()).setScale(precision, RoundingMode.HALF_UP);
 				
 				set_ValueOfColumn("ConvertedAmt", convAmt);
 				setAmount(amount);
