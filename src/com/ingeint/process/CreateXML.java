@@ -3,12 +3,14 @@ package com.ingeint.process;
 import java.io.File;
 import java.io.FileWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.MCurrency;
 import org.compiere.model.MOrg;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MSysConfig;
@@ -77,7 +79,7 @@ public class CreateXML extends CustomProcess {
 					+ "WHERE HR_Concept_ID = ? "
 					+ "AND HR_Process_ID = ? "
 					+ "AND C_BPartner_ID = ?";
-			
+			int precisionCu = MCurrency.getStdPrecision(getCtx(),Env.getContextAsInt(getCtx(), "$C_Currency_ID"));	
 			BigDecimal AmountFactor = DB.getSQLValueBD(null, sql, new Object[] {PerecentageRet, move.getHR_Process_ID(), move.getC_BPartner_ID()});	
 			
 			// Element 1
@@ -89,8 +91,8 @@ public class CreateXML extends CustomProcess {
 				detail.addContent(new Element("NumeroControl").addContent("NA"));
 				detail.addContent(new Element("FechaOperacion").addContent(date));
 				detail.addContent(new Element("CodigoConcepto").addContent("001"));
-				detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().toString()));
-				detail.addContent(new Element("PorcentajeRetencion").addContent(AmountFactor.toString()));
+				detail.addContent(new Element("MontoOperacion").addContent(move.getAmount().setScale(precisionCu, RoundingMode.HALF_UP).toString()));
+				detail.addContent(new Element("PorcentajeRetencion").addContent(AmountFactor.setScale(precisionCu, RoundingMode.HALF_UP).toString()));
 				root.addContent(detail);};
 	
 			}
