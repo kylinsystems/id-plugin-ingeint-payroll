@@ -140,7 +140,7 @@ public class PayrollViaEMail extends CustomProcess
 		//
 		long start = System.currentTimeMillis();
 		
-		int UserMailFrom_ID = MSysConfig.getIntValue("payroll_email", 0, getAD_Client_ID());
+		int UserMailFrom_ID = MSysConfig.getIntValue("EMAIL_PAYROLL_USER_ID", 0, getAD_Client_ID());
 		
 		if (UserMailFrom_ID > 0)
 			m_from = new MUser(getCtx(),UserMailFrom_ID,get_TrxName());
