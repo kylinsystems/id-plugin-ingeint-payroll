@@ -30,6 +30,7 @@ import org.compiere.model.MInterestArea;
 import org.compiere.model.MMailText;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
@@ -139,19 +140,27 @@ public class PayrollViaEMail extends CustomProcess
 		//
 		long start = System.currentTimeMillis();
 		
-		m_from = new MUser(getCtx(),Env.getAD_User_ID(getCtx()),get_TrxName());
+		int UserMailFrom_ID = MSysConfig.getIntValue("payroll_email", 0, getAD_Client_ID());
+		
+		if (UserMailFrom_ID > 0)
+			m_from = new MUser(getCtx(),UserMailFrom_ID,get_TrxName());
+		else 		
+			m_from = new MUser(getCtx(),Env.getAD_User_ID(getCtx()),get_TrxName());
+		
 		if (m_from.getAD_User_ID() == 0)
 			throw new Exception ("No found @AD_User_ID@=" + m_AD_User_ID);
+		
 		if (m_AD_User_ID > 0)
 		{
 				MUser tmpUser = new MUser(getCtx(),m_AD_User_ID,get_TrxName());
 				sendIndividualMail (m_from.getName(), tmpUser.getC_BPartner_ID(), null);
 		}else if (m_C_BP_Group_ID > 0)
+
 			sendBPGroup();
 		else 
 			sendBPOfHRProcess();
-		log.fine("From " + m_from);
-			
+
+		log.fine("From " + m_from);			
 
 		return "@Created@=" + m_counter + ", @Errors@=" + m_errors + " - "
 			+ (System.currentTimeMillis()-start) + "ms";
