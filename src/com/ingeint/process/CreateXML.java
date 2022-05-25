@@ -83,7 +83,7 @@ public class CreateXML extends CustomProcess {
 			BigDecimal AmountFactor = DB.getSQLValueBD(null, sql, new Object[] {PerecentageRet, move.getHR_Process_ID(), move.getC_BPartner_ID()});	
 			
 			// Element 1
-			if(move.getC_BPartner().getTaxID().length() > 8) {
+			if(move.getC_BPartner().getTaxID().length() > 8 && AmountFactor !=null) {
 			
 				Element detail = new Element("DetalleRetencion");
 				detail.addContent(new Element("RifRetenido").addContent("V" + move.getC_BPartner().getTaxID()));
