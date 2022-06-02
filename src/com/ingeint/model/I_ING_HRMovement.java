@@ -260,4 +260,19 @@ public interface I_ING_HRMovement
 	public int getUser1_ID();
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException;
+	
+	/** Column name User1_ID */
+    public static final String COLUMNNAME_User2_ID = "User2_ID";
+
+	/** Set User Element List 1.
+	  * User defined list element #1
+	  */
+	public void setUser2_ID (int User2_ID);
+
+	/** Get User Element List 1.
+	  * User defined list element #1
+	  */
+	public int getUser2_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
 }

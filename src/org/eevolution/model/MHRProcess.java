@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.exceptions.DBException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
@@ -723,6 +722,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			mv.setHR_Department_ID(employee.getHR_Department_ID());
 			mv.setC_Activity_ID(employee.getC_Activity_ID());
 			mv.setUser1_ID(employee.get_ValueAsInt("User1_ID"));
+			mv.setUser2_ID(employee.get_ValueAsInt("User2_ID"));
 			mv.setValidFrom(m_dateFrom);
 			mv.setValidTo(m_dateTo);
 			mv.setPP_Cost_Collector_ID(cc.getPP_Cost_Collector_ID());
@@ -744,11 +744,37 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 	private void createCumulatedMovements() throws SQLException {
 
 		StringBuffer sql = new StringBuffer(
-				"SELECT m.AD_Client_ID, m.AD_Org_ID, m.HR_Process_ID, SUM(m.Amount) as Amount, m.HR_Concept_ID, m.accountsign, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID, SUM(m.ConvertedAmt)"
-						+ "FROM HR_Movement m " + "JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
-						+ "WHERE m.AD_Client_ID = ? AND m.HR_Process_ID=? and m.accountsign notnull "
-						+ "GROUP BY m.hr_concept_id, m.AccountSign, m.hr_concept_id, m.AD_Client_ID, m.AD_Org_ID, m.hr_process_id, m.User1_ID, m.C_Activity_ID, p.C_Currency_ID, p.C_Conversion_Rate_ID "
-						+ "ORDER BY User1_ID, C_Activity_ID");
+				" SELECT m.AD_Client_ID, "
+				+ " m.AD_Org_ID, "
+				+ " m.HR_Process_ID, "
+				+ " SUM(m.Amount) as Amount, "
+				+ " m.HR_Concept_ID, "
+				+ " m.accountsign, "
+				+ " m.User1_ID, "
+				+ " m.C_Activity_ID, "
+				+ " p.C_Currency_ID, "
+				+ " p.C_Conversion_Rate_ID, "
+				+ " SUM(m.ConvertedAmt), "
+				+ " m.User2_ID "
+				+ " FROM HR_Movement m " 
+				+ " JOIN HR_Process p on p.HR_Process_ID = m.HR_Process_ID "
+				+ " WHERE m.AD_Client_ID = ? "
+				+ " AND m.HR_Process_ID=? "
+				+ " and m.accountsign notnull "
+				+ " GROUP BY m.hr_concept_id, "
+				+ " 	     m.AccountSign, "
+				+ "          m.hr_concept_id, "
+				+ "          m.AD_Client_ID, "
+				+ "          m.AD_Org_ID, "
+				+ "          m.hr_process_id, "
+				+ "          m.User1_ID, "
+				+ "          m.C_Activity_ID, "
+				+ "          p.C_Currency_ID, "
+				+ "          p.C_Conversion_Rate_ID, "
+				+ "          m.User2_ID "
+				+ " ORDER BY User1_ID, "
+				+ "          m.User2_ID, "
+				+ "          C_Activity_ID");
 
 		try {
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -772,6 +798,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 				move.setC_Conversion_Rate_ID(rs.getInt(10));
 				move.setC_Currency_ID(rs.getInt(9));
 				move.set_ValueOfColumn("ConvertedAmt", rs.getBigDecimal(11));
+				move.setUser2_ID(rs.getInt(12));
 				move.saveEx();
 			}
 		} finally {
@@ -987,6 +1014,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		movement.setIsRegistered(concept.isRegistered());
 		movement.setC_Activity_ID(m_employee.getC_Activity_ID());
 		movement.setUser1_ID(m_employee.get_ValueAsInt("User1_ID"));
+		movement.setUser2_ID(m_employee.get_ValueAsInt("User2_ID"));
 		movement.set_ValueOfColumn("EmployeeGroup", partner.get_Value("EmployeeGroup"));
 		if (MHRConcept.TYPE_RuleEngine.equals(concept.getType())) {
 			log.info("Executing rule for concept " + concept.getValue());
@@ -1147,6 +1175,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			m.setIsRegistered(c.isRegistered());
 			m.setC_Activity_ID(employee.getC_Activity_ID());
 			m.setUser1_ID(employee.get_ValueAsInt("User1_ID"));
+			m.setUser2_ID(employee.get_ValueAsInt("User2_ID"));
 			// m.setProcessed(true); ??
 
 			m.saveEx();
@@ -1194,6 +1223,7 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			m.setIsRegistered(c.isRegistered());
 			m.setC_Activity_ID(employee.getC_Activity_ID());
 			m.setUser1_ID(employee.get_ValueAsInt("User1_ID"));
+			m.setUser2_ID(employee.get_ValueAsInt("User2_ID"));
 			// m.setProcessed(true); ??
 
 			m.saveEx();

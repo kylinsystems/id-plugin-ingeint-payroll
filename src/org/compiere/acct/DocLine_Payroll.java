@@ -49,6 +49,7 @@ public class DocLine_Payroll extends DocLine {
 		m_HR_Department_ID = line.getHR_Department_ID();
 		m_C_Activity_ID = line.getC_Activity_ID();
 		m_User1_ID = line.getUser1_ID();
+		m_User2_ID = line.getUser2_ID();
 		m_C_BP_Group_ID = bpartner.getC_BP_Group_ID();
 		m_AccountSign = concept.getAccountSign();
 		m_Amount = line.getAmount();
@@ -64,6 +65,7 @@ public class DocLine_Payroll extends DocLine {
 		m_AccountSign = concept.getAccountSign();
 		m_Amount = line.getAmount();
 		m_User1_ID = line.getUser1_ID();
+		m_User2_ID = line.getUser2_ID();
 		m_C_Activity_ID = line.getC_Activity_ID();
 		m_Amount = line.getAmount();
 		m_CumulatedAmt = new BigDecimal(line.get_Value("ConvertedAmt").toString());
@@ -85,6 +87,7 @@ public class DocLine_Payroll extends DocLine {
 	private int m_HR_Department_ID = 0;
 	private int m_C_BP_Group_ID = 0;
 	private int m_User1_ID = 0;
+	private int m_User2_ID = 0;
 	private BigDecimal m_CumulatedAmt = Env.ZERO;
 	private int m_C_Currency_ID = 0;
 	private int m_C_Conversion_Rate_ID = 0;
@@ -124,6 +127,10 @@ public class DocLine_Payroll extends DocLine {
 	public int getUser1_ID() {
 		return m_User1_ID;
 	}
+	
+	public int getUser2_ID() {
+		return m_User2_ID;
+	}
 
 	public BigDecimal getM_CumulatedAmt() {
 		return m_CumulatedAmt;
@@ -148,6 +155,8 @@ public class DocLine_Payroll extends DocLine {
 	public void setM_C_Conversion_Rate_ID(int m_C_Conversion_Rate_ID) {
 		this.m_C_Conversion_Rate_ID = m_C_Conversion_Rate_ID;
 	}
+	
+	
 
 	
 } // DocLine_Payroll
