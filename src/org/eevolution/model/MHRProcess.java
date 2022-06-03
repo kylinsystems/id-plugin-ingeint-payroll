@@ -856,6 +856,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 		for (MBPartner bp : linesEmployee) // ===============================================================
 		// Employee
 		{
+			if (bp.get_ValueAsBoolean("HR_Exclude"))
+				continue;
 			log.info("Employee " + count + "  ---------------------- " + bp.getName());
 			count++;
 			m_C_BPartner_ID = bp.get_ID();
