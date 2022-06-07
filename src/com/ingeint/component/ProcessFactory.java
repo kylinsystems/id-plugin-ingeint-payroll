@@ -23,5 +23,7 @@ public class ProcessFactory extends CustomProcessFactory{
 		registerProcess(org.eevolution.process.HRCreatePeriods.class);
 		registerProcess(com.ingeint.process.CreateXML.class);
 		registerProcess(org.eevolution.process.PayrollViaEMail.class);
+		registerProcess(com.ingeint.process.RecreateCumulatedMovements.class);
+
 	}
 }

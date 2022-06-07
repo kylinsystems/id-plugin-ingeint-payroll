@@ -809,6 +809,11 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 
 	}
 
+
+	public static void createCumulatedMovements(MHRProcess process) throws SQLException {
+		process.createCumulatedMovements();
+	}
+
 	/**
 	 * create Movements for corresponding process , period
 	 */
