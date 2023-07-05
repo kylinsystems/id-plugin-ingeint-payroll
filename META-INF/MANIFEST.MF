@@ -6,12 +6,12 @@ Bundle-Version: 10.0.0.qualifier
 Bundle-Activator: org.adempiere.plugin.utils.Incremental2PackActivator
 Bundle-Vendor: INGEINT <https:www.//ingeint.com>
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
- org.adempiere.plugin.utils;bundle-version="8.2.0",
- org.adempiere.base.callout;bundle-version="8.2.0",
- org.adempiere.base.process;bundle-version="8.2.0",
- org.adempiere.ui.zk;bundle-version="8.2.0",
- org.idempiere.zk.extra;bundle-version="8.2.0",
+Require-Bundle: org.adempiere.base;bundle-version="10.0.0",
+ org.adempiere.plugin.utils;bundle-version="10.0.0",
+ org.adempiere.base.callout;bundle-version="10.0.0",
+ org.adempiere.base.process;bundle-version="10.0.0",
+ org.adempiere.ui.zk;bundle-version="10.0.0",
+ org.idempiere.zk.extra;bundle-version="10.0.0",
  org.adempiere.ui.zk;bundle-version="4.1.0",
  zcommon;bundle-version="0.0.0",
  zel;bundle-version="0.0.0",
