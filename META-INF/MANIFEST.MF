@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.ingeint.idempierePayroll
 Bundle-SymbolicName: com.ingeint.idempierePayroll
-Bundle-Version: 9.0.0.qualifier
+Bundle-Version: 10.0.0.qualifier
 Bundle-Activator: org.adempiere.plugin.utils.Incremental2PackActivator
 Bundle-Vendor: INGEINT <https:www.//ingeint.com>
 Bundle-RequiredExecutionEnvironment: JavaSE-11
@@ -21,8 +21,7 @@ Require-Bundle: org.adempiere.base;bundle-version="8.2.0",
  zkplus;bundle-version="0.0.0",
  zul;bundle-version="0.0.0",
  zweb;bundle-version="0.0.0",
- org.globalqss.idempiere.LCO.detailednames;bundle-version="8.2.0",
- ve.com.dcs.lve-features;bundle-version="8.2.0"
+ org.globalqss.idempiere.LCO.detailednames;bundle-version="10.0.0"
 Service-Component: OSGI-INF/org.idempiere.component.HRDocFactory.xml,OSGI-INF/com.ingeint.component.ZKFormFactory.xml,OSGI-INF/com.ingeint.component.ModelFactory.xml,OSGI-INF/com.ingeint.component.EventManager.xml,
  OSGI-INF/com.ingeint.component.ProcessFactory.xml, OSGI-INF/com.ingeint.component.CalloutFactory.xml
 Export-Package: com.ingeint.model,
