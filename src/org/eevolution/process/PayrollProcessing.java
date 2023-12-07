@@ -5,10 +5,11 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 import org.eevolution.model.MHRProcess;
 
-public class PayrollProcessing extends SvrProcess
+import com.ingeint.base.CustomProcess;
+
+public class PayrollProcessing extends CustomProcess
 {
 	public static final String PARAM_HR_Process_ID = "HR_Process_ID";
 

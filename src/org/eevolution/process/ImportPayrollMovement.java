@@ -34,18 +34,19 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.compiere.process.ProcessInfoParameter;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.eevolution.model.MHRConcept;
 import org.eevolution.model.MHRMovement;
 import org.eevolution.model.X_I_HR_Movement;
+
+import com.ingeint.base.CustomProcess;
 
 /**
  *	Import Payroll Movements from I_HR_Movement
  *
  * 	@author 	GlobalQSS/jjgq
  */
-public class ImportPayrollMovement extends SvrProcess
+public class ImportPayrollMovement extends CustomProcess
 {
 	/**	Client to be imported to		*/
 	private int				m_AD_Client_ID = 0;
