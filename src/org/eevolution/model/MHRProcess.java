@@ -891,6 +891,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 			m_scriptCtx.remove("_DateEnd");
 			m_scriptCtx.remove("_Days");
 			m_scriptCtx.remove("_C_BPartner_ID");
+			m_scriptCtx.remove("_PayrollEmployee");
+			m_scriptCtx.remove("employee");
 			if (m_employee == null)
 				throw new AdempiereException(
 						"Error: Verifique la informacion del empleado: " + bp.getName() + "_" + bp.getTaxID());
@@ -901,6 +903,8 @@ public class MHRProcess extends X_HR_Process implements DocAction {
 					org.compiere.util.TimeUtil.getDaysBetween(period.getStartDate(), period.getEndDate()) + 1);
 			m_scriptCtx.put("_C_BPartner_ID", bp.getC_BPartner_ID());
 			m_scriptCtx.put("_JobEmployee", m_employee.getHR_Job_ID());
+			m_scriptCtx.put("_PayrollEmployee", m_employee.getHR_Payroll_ID());
+			m_scriptCtx.put("employee", m_employee);
 
 			m_movement.clear();
 			loadMovements(m_movement, m_C_BPartner_ID);
